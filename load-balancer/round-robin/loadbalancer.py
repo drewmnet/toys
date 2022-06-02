@@ -1,3 +1,3 @@
-#!/usr/bin/env python3
-
-print("Hello, toys")
+class LoadBalancer:
+    def __init__(self):
+        self.nodes = {}
