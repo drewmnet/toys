@@ -24,7 +24,7 @@ class Selector:
         self.font_height = theme.ui_basic_font.get_height()
         self.padding = theme.ui_padding
         height = len(self.labels) * self.font_height + self.padding + 2
-        self.rect = geometry + tuple([height]) # (x, y, w) + (h)
+        self.rect = list(geometry + tuple([height])) # (x, y, w) + (h)
         
         self.value = 0
         
@@ -56,6 +56,10 @@ battle_selector = Selector(["Fight","Run"], (10,10,100), theme)
 party = [ "Elaine", "Talin", "AVAT5" ]
 counter = 0
 
+positions = [ (10, 10), (30, 30), (50, 50) ]
+battle_selector.rect[0] = positions[counter][0]
+battle_selector.rect[1] = positions[counter][1]
+
 running = True
 while running:
     clock.tick(60)
@@ -69,6 +73,9 @@ while running:
             elif event.key == pygame.K_RCTRL: # 'A' button
                 print(f"{party[counter]} selects {battle_selector.labels[battle_selector.value]}")
                 counter += 1
+                battle_selector.rect[0] = positions[counter][0]
+                battle_selector.rect[1] = positions[counter][1]
+
             
             # remove
             elif event.key == pygame.K_ESCAPE:
