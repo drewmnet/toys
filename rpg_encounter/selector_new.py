@@ -46,47 +46,66 @@ class Selector:
     def change_value(self, value):
         self.value = (self.value + value) % len(self.labels)
 
+class PlayerParty:
+    
+    positions = [ (10, 10), (30, 30), (50, 50) ]
+
+
+    def __init__(self, members: list, selector: Selector):
+        self.members = members
+        self.selector = selector
+        self.member = 0
+
+    def start(self):
+        self.member = 0
+        self.selector.rect[0] = self.positions[self.member][0]
+        self.selector.rect[1] = self.positions[self.member][1]
+
+    def command(self):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_DOWN:
+                    self.selector.change_value(1)
+                elif event.key == pygame.K_UP:
+                    self.selector.change_value(-1)
+                elif event.key == pygame.K_RCTRL: # 'A' button
+                    print(f"{self.members[self.member]} selects {self.selector.labels[self.selector.value]}")
+                    self.selector.value = 0
+                    self.member += 1
+                    if self.member < len(self.members):
+                        self.selector.rect[0] = self.positions[self.member][0]
+                        self.selector.rect[1] = self.positions[self.member][1]
+
+                
+                # remove
+                elif event.key == pygame.K_ESCAPE:
+                    pygame.quit()
+                    exit()
+
+    def update(self):
+        self.command()
+        if self.member == len(self.members):
+            print("Enemy commands\nInitiative\nCombat\nStatus Effects\n")
+            pygame.time.wait(4000)
+            pygame.quit()
+            exit()
+            
+    def render(self, display):
+        self.selector.render(display)
+
 pygame.init()
 display = pygame.display.set_mode((500,500))
 clock = pygame.time.Clock()
 
 theme = Theme()
 battle_selector = Selector(["Fight","Run"], (10,10,100), theme)
-
 party = [ "Elaine", "Talin", "AVAT5" ]
-counter = 0
-
-positions = [ (10, 10), (30, 30), (50, 50) ]
-battle_selector.rect[0] = positions[counter][0]
-battle_selector.rect[1] = positions[counter][1]
+player_party = PlayerParty(party, battle_selector)
 
 running = True
 while running:
     clock.tick(60)
 
-    for event in pygame.event.get():
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN:
-                battle_selector.change_value(1)
-            elif event.key == pygame.K_UP:
-                battle_selector.change_value(-1)
-            elif event.key == pygame.K_RCTRL: # 'A' button
-                print(f"{party[counter]} selects {battle_selector.labels[battle_selector.value]}")
-                counter += 1
-                battle_selector.rect[0] = positions[counter][0]
-                battle_selector.rect[1] = positions[counter][1]
-
-            
-            # remove
-            elif event.key == pygame.K_ESCAPE:
-                pygame.quit()
-                exit()
-
-    if counter == len(party):
-        print("Enemy commands\nInitiative\nCombat\nStatus Effects\n")
-        pygame.time.wait(4000)
-        pygame.quit()
-        exit()
-
-    battle_selector.render(display)
+    player_party.update()
+    player_party.render(display)
     pygame.display.flip()
