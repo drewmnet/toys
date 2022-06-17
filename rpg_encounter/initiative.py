@@ -16,5 +16,5 @@ fighters = [ Battler("Elaine"),Battler("Talin"),Battler("AVAT5"),Battler("Cok1")
 for fighter in fighters:
     fighter.roll()
 
-for fighter in sorted(fighters, key=operator.attrgetter('initiative')):
-    print(f"{fighter.name}")
+for fighter in sorted(fighters, key=operator.attrgetter('initiative'))[::-1]:
+    print(f"{fighter.name} {fighter.initiative}")
