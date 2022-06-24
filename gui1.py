@@ -1,4 +1,5 @@
 import pygame
+import numpy
 
 pygame.init()
 display = pygame.display.set_mode((500,500))
@@ -15,17 +16,16 @@ while running:
     if pygame.mouse.get_pressed()[0] and not is_clicked:
         is_clicked = True
         if window_head.collidepoint(pygame.mouse.get_pos()):
-            calc_x = pygame.mouse.get_pos()[0] - window_head.x
-            calc_y = pygame.mouse.get_pos()[1] - window_head.y
+            calc = numpy.subtract(pygame.mouse.get_pos(), window_head[:2])
             is_on_head = True
     elif not pygame.mouse.get_pressed()[0] and is_clicked:
         is_clicked = False
         is_on_head = False
     
     if is_on_head:
-        x, y = pygame.mouse.get_pos()
-        window_head.x = x - calc_x
-        window_head.y = y - calc_y
+        x, y = tuple(numpy.subtract(pygame.mouse.get_pos(), calc))
+        window_head.x = x
+        window_head.y = y
     
     pygame.draw.rect(display, (0,0,0xff), window_head)
 
